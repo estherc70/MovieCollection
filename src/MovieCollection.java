@@ -57,6 +57,7 @@ public class MovieCollection {
             System.out.print("Enter choice: ");
             menuOption = scan.nextLine();
 
+
             if (menuOption.equals("t")) {
                 searchTitles();
             } else if (menuOption.equals("c")) {
@@ -74,28 +75,38 @@ public class MovieCollection {
         System.out.print("Enter a title search term: ");
         String searchTerm = scan.nextLine();
         ArrayList<String> containTitles = new ArrayList<>();
+        boolean moviesFound = false;
         for (int i = 0; i < movies.size(); i++) {
             if (movies.get(i).getTitle().toLowerCase().contains(searchTerm.toLowerCase())) {
                 containTitles.add(movies.get(i).getTitle());
+                moviesFound = true;
             }
         }
-        sortWordList(containTitles);
-        removeDuplicate(containTitles);
-        printList(containTitles);
-        System.out.println("Which movie would you like to learn more about? ");
-        System.out.print("Enter number: ");
-        int num = scan.nextInt();
-        for (int i = 0; i < movies.size();i++) {
-            if (movies.get(i).getTitle().equals(containTitles.get(num-1))) {
-                printMovieInfo(movies.get(i));
+        if (!(moviesFound)) {
+            System.out.println();
+            System.out.println("No movie titles match that search term!");
+        }
+        else {
+            sortWordList(containTitles);
+            removeDuplicate(containTitles);
+            printList(containTitles);
+            System.out.println("Which movie would you like to learn more about? ");
+            System.out.print("Enter number: ");
+            int num = scan.nextInt();
+            scan.nextLine();
+            for (int i = 0; i < movies.size(); i++) {
+                if (movies.get(i).getTitle().equals(containTitles.get(num - 1))) {
+                    printMovieInfo(movies.get(i));
+                }
             }
         }
     }
 
     public void searchCast() {
-        System.out.println("Enter a person to search for (first or last name): ");
+        System.out.print("Enter a person to search for (first or last name): ");
         String searchCast = scan.nextLine();
         ArrayList<String> containCast = new ArrayList<>();
+        boolean exist = false;
         for (int i = 0; i < movies.size(); i++) {
             for (int j = 0; j < movies.get(i).getCast().size(); j++) {
                 if (movies.get(i).getCast().get(j).contains(searchCast)) {
@@ -103,12 +114,32 @@ public class MovieCollection {
                 }
             }
         }
-        sortWordList(containCast);
-        removeDuplicate(containCast);
-        printList(containCast);
-        System.out.println("Which would you like to see all movies for?");
-        System.out.print("Enter number: ");
-        int num = scan.nextInt();
+        if (!(exist)) {
+            System.out.println();
+            System.out.println("No results match your search");
+        } else {
+            sortWordList(containCast);
+            removeDuplicate(containCast);
+            printList(containCast);
+            System.out.println();
+            System.out.println("Which would you like to see all movies for?");
+            System.out.print("Enter number: ");
+            int num = scan.nextInt();
+            scan.nextLine();
+            ArrayList<Movie> movieFound = findMovie(containCast.get(num - 1));
+            sortMovieList(movieFound);
+            printMovie(movieFound);
+            System.out.println();
+            System.out.println("Which movie would you like to learn more about?");
+            System.out.print("Enter number: ");
+            int movieNum = scan.nextInt();
+            scan.nextLine();
+            for (int i = 0 ; i < movies.size(); i++) {
+                if (movies.get(i).getTitle().equals(movieFound.get(movieNum-1).getTitle())) {
+                    printMovieInfo(movies.get(i));
+                }
+            }
+        }
     }
 
     public void sortWordList(ArrayList<String> list) {
@@ -138,7 +169,8 @@ public class MovieCollection {
         System.out.println("Title: " + movie.getTitle());
         System.out.println("Runtime: " + movie.getRuntime() + "minutes");
         System.out.println("Directed by: " + movie.getDirector());
-        System.out.println("Cast: " + movie.getCast());
+        System.out.print("Cast: " );
+        printArray(movie.getCast());
         System.out.println("Overview: " + movie.getOverview());
         System.out.println("User rating: " + movie.getUserRating());
     }
@@ -156,6 +188,57 @@ public class MovieCollection {
     }
         
     }
+
+    public void printArray(ArrayList<String> array) {
+        for (String members : array) {
+            System.out.print(members + " ,");
+        }
+    }
+
+    public void printMovie(ArrayList<Movie> movies) {
+        int counter = 1;
+        for (Movie movie : movies) {
+            System.out.println(counter + ". " + movie.getTitle());
+            counter++;
+        }
+    }
+
+    public ArrayList<Movie> findMovie(String person) {
+
+        ArrayList<Movie> movie = new ArrayList<>();
+        for (int i = 0; i < movies.size(); i++) {
+            boolean isInMovie = false;
+            Movie currentMovie = movies.get(i);
+            for (int j = 0; j < currentMovie.getCast().size(); j++) {
+                if (person.equals(currentMovie.getCast().get(j))) {
+                    isInMovie = true;
+                }
+            }
+            if (isInMovie) {
+                movie.add(movies.get(i));
+            }
+        }
+        return movie;
+    }
+
+    public void sortMovieList(ArrayList<Movie> list) {
+        for (int i = 0; i < list.size(); i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < list.size(); j++) {
+                if (list.get(j).getTitle().compareTo(list.get(minIndex).getTitle()) < 0) {
+                    minIndex = j;
+                }
+            }
+            Movie temp = list.get(i);
+            list.set(i, list.get(minIndex));
+            list.set(minIndex, temp);
+        }
+    }
+
+
+
+
+
 
 
 }
