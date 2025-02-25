@@ -109,8 +109,9 @@ public class MovieCollection {
         boolean exist = false;
         for (int i = 0; i < movies.size(); i++) {
             for (int j = 0; j < movies.get(i).getCast().size(); j++) {
-                if (movies.get(i).getCast().get(j).contains(searchCast)) {
+                if (movies.get(i).getCast().get(j).toLowerCase().contains(searchCast.toLowerCase())) {
                     containCast.add(movies.get(i).getCast().get(j));
+                    exist = true;
                 }
             }
         }
@@ -167,7 +168,7 @@ public class MovieCollection {
     public void printMovieInfo(Movie movie) {
         System.out.println();
         System.out.println("Title: " + movie.getTitle());
-        System.out.println("Runtime: " + movie.getRuntime() + "minutes");
+        System.out.println("Runtime: " + movie.getRuntime() + " minutes");
         System.out.println("Directed by: " + movie.getDirector());
         System.out.print("Cast: " );
         printArray(movie.getCast());
@@ -181,7 +182,7 @@ public class MovieCollection {
             for (int j = i + 1; j < list.size(); j++) {
                 if (current.equals(list.get(j))) {
                     list.remove(j);
-                    j++; 
+                    j--;
                 }
             }
         }
