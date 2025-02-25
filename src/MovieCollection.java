@@ -21,9 +21,6 @@ public class MovieCollection {
     }
 
     private void readData() {
-        // TODO: write this method: load the shopping list data from your shoppinglist.txt file and populate shoppingList.
-        //  note that this method gets called immediately at the start of the "start" method;
-        //  you only need to read the data in one time to populate the shoppingList arraylist
         try {
             File myFile = new File("src\\movies_data.csv");
             Scanner fileScanner = new Scanner(myFile);
@@ -48,6 +45,7 @@ public class MovieCollection {
     }
 
     public void start() {
+        readData();
         System.out.println("Welcome to the movie collection!");
         String menuOption = "";
 
@@ -73,11 +71,11 @@ public class MovieCollection {
 
 
     public void searchTitles() {
-        System.out.println("Enter a title search term: ");
+        System.out.print("Enter a title search term: ");
         String searchTerm = scan.nextLine();
         ArrayList<String> containTitles = new ArrayList<>();
         for (int i = 0; i < movies.size(); i++) {
-            if (movies.get(i).getTitle().contains(searchTerm)) {
+            if (movies.get(i).getTitle().toLowerCase().contains(searchTerm.toLowerCase())) {
                 containTitles.add(movies.get(i).getTitle());
             }
         }
@@ -87,7 +85,11 @@ public class MovieCollection {
         System.out.println("Which movie would you like to learn more about? ");
         System.out.print("Enter number: ");
         int num = scan.nextInt();
-        printMovieInfo(movies.get(num-1));
+        for (int i = 0; i < movies.size();i++) {
+            if (movies.get(i).getTitle().equals(containTitles.get(num-1))) {
+                printMovieInfo(movies.get(i));
+            }
+        }
     }
 
     public void searchCast() {
@@ -132,8 +134,9 @@ public class MovieCollection {
     }
 
     public void printMovieInfo(Movie movie) {
+        System.out.println();
         System.out.println("Title: " + movie.getTitle());
-        System.out.println("Runtime: " + movie.getRuntime());
+        System.out.println("Runtime: " + movie.getRuntime() + "minutes");
         System.out.println("Directed by: " + movie.getDirector());
         System.out.println("Cast: " + movie.getCast());
         System.out.println("Overview: " + movie.getOverview());
